@@ -5,12 +5,12 @@ using Photon.Bolt;
 
 public class PlayerHealth : EntityBehaviour<IPlayerState>
 {
-    int localHealth = 3;
+    private int _localHealth = 3;
 
     //Start()
     public override void Attached()
     {
-        state.Health = localHealth;
+        state.Health = _localHealth;
 
         state.AddCallback("Health", HealthCallback);
     }
@@ -25,9 +25,9 @@ public class PlayerHealth : EntityBehaviour<IPlayerState>
 
     private void HealthCallback()
     {
-        localHealth = state.Health;
+        _localHealth = state.Health;
 
-        if (localHealth <= 0)
+        if (_localHealth <= 0)
         {
             BoltNetwork.Destroy(gameObject);
         }

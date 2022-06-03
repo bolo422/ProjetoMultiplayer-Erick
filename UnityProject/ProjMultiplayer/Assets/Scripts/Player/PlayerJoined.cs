@@ -6,7 +6,7 @@ using Photon.Bolt;
 public class PlayerJoined : EntityBehaviour<IPlayerState>
 {
     [SerializeField]
-    Camera camera;
+    private Camera _camera;
 
     public override void Attached()
     {
@@ -16,7 +16,7 @@ public class PlayerJoined : EntityBehaviour<IPlayerState>
 
         if (entity.IsOwner)
         {
-            camera.gameObject.SetActive(true);
+            _camera.gameObject.SetActive(true);
         }
     }
 

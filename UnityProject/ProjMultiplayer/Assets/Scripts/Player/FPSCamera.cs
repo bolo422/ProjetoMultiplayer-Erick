@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class FPSCamera : MonoBehaviour
 {
-    float mouseSensitivity = 200f;
+    public float mouseSensitivity {get; set;}
 
     [SerializeField]
-    Transform playerHead;
+    private Transform _playerHead;
 
     [SerializeField]
-    Transform playerBody;
+    private Transform _playerBody;
 
-    float xRotation = 0f;
+    private float _xRotation = 0f;
+
+    void Awake()
+    {
+        if(mouseSensitivity == 0)
+            mouseSensitivity = 200f;    // TODO: transformar estes 200f em uma variavel global?
+                                        //TODO: Associate with "Scripts/Player/Movement/PlayerControlle:_mouseSensistivty"
+    }
 
     void Start()
     {
@@ -24,11 +31,11 @@ public class FPSCamera : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        _xRotation -= mouseY;
+        _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
 
-        playerHead.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        playerBody.Rotate(Vector3.up * mouseX);
+        _playerHead.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
+        _playerBody.Rotate(Vector3.up * mouseX);
     }
 
     void SetMouseSensitivity(float value)
