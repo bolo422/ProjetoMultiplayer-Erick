@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 1679500944104813683}
   - component: {fileID: 3124529150449711940}
   - component: {fileID: 180782824319253367}
+  - component: {fileID: 7259885748278493383}
   m_Layer: 0
   m_Name: MovableCube
-  m_TagString: Untagged
+  m_TagString: movableCube
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -142,3 +143,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &7259885748278493383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5639689680847580860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d3034bb7689a3440a6e5cc31c5b24cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

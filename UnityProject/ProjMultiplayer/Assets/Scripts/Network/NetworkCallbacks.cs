@@ -16,7 +16,7 @@ public class NetworkCallbacks : GlobalEventListener
 
         if(BoltNetwork.IsServer)
         {
-            GameObject cube = Resources.Load<GameObject>("MovableCube2");
+            GameObject cube = Resources.Load<GameObject>("MovableCube");
             props.Add(BoltNetwork.Instantiate(cube, new Vector3(0,5,0), Quaternion.identity));
         }
 

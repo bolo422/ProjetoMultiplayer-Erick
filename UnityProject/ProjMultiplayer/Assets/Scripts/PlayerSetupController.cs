@@ -20,7 +20,7 @@ public class PlayerSetupController : GlobalEventListener
         }
         else
         {
-            BoltNetwork.Instantiate(BoltPrefabs.MovableCube2, new Vector3(1, 5, 0), Quaternion.identity);
+            BoltNetwork.Instantiate(BoltPrefabs.MovableCube, new Vector3(1, 5, 0), Quaternion.identity);
         }
     }
 

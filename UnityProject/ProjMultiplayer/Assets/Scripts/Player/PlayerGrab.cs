@@ -1,18 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Bolt;
 
-public class PlayerGrab : MonoBehaviour
+public class PlayerGrab : EntityBehaviour<IPhysicState>
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    Transform holdItem;
+
+    private GameObject cube;
+    private bool isHolding = false;
+
+    public override void Attached()
     {
-        
+        cube = GameObject.FindGameObjectWithTag("movableCube");
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        if(Input.GetKeyUp(KeyCode.K))
+        {
+            isHolding = !isHolding;
+            cube.GetComponent<MovableCube>().Hold(holdItem, isHolding);
+        }
     }
+
 }
