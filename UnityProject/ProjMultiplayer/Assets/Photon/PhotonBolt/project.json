@@ -8,6 +8,7 @@
         {
           "Name": "Transform",
           "Enabled": true,
+          "Expanded": true,
           "ReplicationMode": 1,
           "Priority": 1,
           "PropertyType": {
@@ -16,31 +17,34 @@
             "RotationSelection": 14,
             "PositionCompression": [
               {
-                "MinValue": -1024,
-                "MaxValue": 1024,
+                "MinValue": -163,
+                "MaxValue": 163,
                 "Accuracy": 0.01,
+                "Enabled": true,
                 "Pack": 100.0,
                 "Read": 0.01,
-                "Shift": 1024.0,
-                "BitsRequired": 18
+                "Shift": 163.0,
+                "BitsRequired": 15
               },
               {
-                "MinValue": -1024,
-                "MaxValue": 1024,
+                "MinValue": -163,
+                "MaxValue": 163,
                 "Accuracy": 0.01,
+                "Enabled": true,
                 "Pack": 100.0,
                 "Read": 0.01,
-                "Shift": 1024.0,
-                "BitsRequired": 18
+                "Shift": 163.0,
+                "BitsRequired": 15
               },
               {
-                "MinValue": -1024,
-                "MaxValue": 1024,
+                "MinValue": -163,
+                "MaxValue": 163,
                 "Accuracy": 0.01,
+                "Enabled": true,
                 "Pack": 100.0,
                 "Read": 0.01,
-                "Shift": 1024.0,
-                "BitsRequired": 18
+                "Shift": 163.0,
+                "BitsRequired": 15
               }
             ],
             "RotationCompression": [
@@ -88,6 +92,7 @@
         {
           "Name": "Health",
           "Enabled": true,
+          "Expanded": true,
           "ReplicationMode": 1,
           "Priority": 1,
           "PropertyType": {
@@ -105,11 +110,11 @@
         {
           "Name": "HeadTransform",
           "Enabled": true,
+          "Expanded": true,
           "ReplicationMode": 1,
           "Priority": 1,
           "PropertyType": {
             "$type": "Photon.Bolt.Compiler.PropertyTypeTransform, bolt.compiler",
-            "PositionSelection": 14,
             "RotationSelection": 14,
             "PositionCompression": [
               {
@@ -282,7 +287,7 @@
         {
           "Name": "Transform",
           "Enabled": true,
-          "ReplicationMode": 1,
+          "Expanded": true,
           "Priority": 1,
           "PropertyType": {
             "$type": "Photon.Bolt.Compiler.PropertyTypeTransform, bolt.compiler",
@@ -290,31 +295,34 @@
             "RotationSelection": 14,
             "PositionCompression": [
               {
-                "MinValue": -1024,
-                "MaxValue": 1024,
+                "MinValue": -163,
+                "MaxValue": 163,
                 "Accuracy": 0.01,
+                "Enabled": true,
                 "Pack": 100.0,
                 "Read": 0.01,
-                "Shift": 1024.0,
-                "BitsRequired": 18
+                "Shift": 163.0,
+                "BitsRequired": 15
               },
               {
-                "MinValue": -1024,
-                "MaxValue": 1024,
+                "MinValue": -163,
+                "MaxValue": 163,
                 "Accuracy": 0.01,
+                "Enabled": true,
                 "Pack": 100.0,
                 "Read": 0.01,
-                "Shift": 1024.0,
-                "BitsRequired": 18
+                "Shift": 163.0,
+                "BitsRequired": 15
               },
               {
-                "MinValue": -1024,
-                "MaxValue": 1024,
+                "MinValue": -163,
+                "MaxValue": 163,
                 "Accuracy": 0.01,
+                "Enabled": true,
                 "Pack": 100.0,
                 "Read": 0.01,
-                "Shift": 1024.0,
-                "BitsRequired": 18
+                "Shift": 163.0,
+                "BitsRequired": 15
               }
             ],
             "RotationCompression": [

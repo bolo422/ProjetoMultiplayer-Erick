@@ -1,18 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Bolt;
 
-public class MovableCube : MonoBehaviour
+public class MovableCube : EntityBehaviour<IMovableCube>
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void Attached()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        state.SetTransforms(state.Transform, transform);
     }
 }

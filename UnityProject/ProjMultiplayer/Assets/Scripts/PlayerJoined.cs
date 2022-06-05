@@ -10,11 +10,8 @@ public class PlayerJoined : EntityBehaviour<IPlayerState>
 
     public override void Attached()
     {
-        var evnt = PlayerJoinedEvent.Create();
-        evnt.Message = "Hello there!";
-        evnt.Send();
 
-        if (entity.IsOwner)
+        if (entity.HasControl)
         {
             camera.gameObject.SetActive(true);
         }
