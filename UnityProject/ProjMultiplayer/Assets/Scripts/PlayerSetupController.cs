@@ -29,12 +29,14 @@ public class PlayerSetupController : GlobalEventListener
     {
         BoltEntity entity = BoltNetwork.Instantiate(BoltPrefabs.Player, new Vector3(0, 1, 0), Quaternion.identity);
         entity.AssignControl(evnt.RaisedBy);
+        Debug.LogError("Spawning player");
     }
 
     public void SpawnPlayer()
     {
         SpawnPlayerEvent evnt = SpawnPlayerEvent.Create(GlobalTargets.OnlyServer);
         evnt.Send();
+        Debug.LogError("Sending SpawnPlayerEvent event");
     }
 
 }

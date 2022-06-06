@@ -9,6 +9,12 @@ public class NetworkManager : GlobalEventListener
     [SerializeField]
     private UnityEngine.UI.Text feedback;
 
+    [SerializeField]
+    private UnityEngine.UI.Text roomNameInputText;
+
+    [SerializeField]
+    private GameObject RoomNameInput;
+
     public void FeedbackUser(string text)
     {
         feedback.text = text;
@@ -16,6 +22,9 @@ public class NetworkManager : GlobalEventListener
 
     public void Connect()
     {
+        //RoomNameInput.SetActive(false);
+        //feedback.GetComponent<GameObject>().SetActive(true);
+
         FeedbackUser("Connnecting ...");
         BoltLauncher.StartClient();
     }
@@ -23,7 +32,10 @@ public class NetworkManager : GlobalEventListener
     public override void SessionListUpdated(Map<Guid, UdpSession> sessionList)
     {
         FeedbackUser("Searching ...");
-        BoltMatchmaking.JoinSession(HeadlessServerManager.RoomID());
+        if(roomNameInputText != null)
+            BoltMatchmaking.JoinSession(roomNameInputText.text);
+        else
+            BoltMatchmaking.JoinSession(HeadlessServerManager.RoomID());
     }
 
     public override void Connected(BoltConnection connection)
