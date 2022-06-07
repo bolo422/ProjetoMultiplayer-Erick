@@ -12,7 +12,7 @@ public class PlayerController : EntityBehaviour<IPhysicState>
     private float _pitch;
     private bool _jump;
 
-    private bool _hold;
+    private bool _hold = false;
 
     private bool _hasControl = false;
 
@@ -56,7 +56,7 @@ public class PlayerController : EntityBehaviour<IPhysicState>
         _left = Input.GetKey(KeyCode.A);
         _right = Input.GetKey(KeyCode.D);
         _jump = Input.GetKey(KeyCode.Space);
-        _hold = Input.GetKey(KeyCode.H);
+        _hold = Input.GetKey(KeyCode.Mouse0);
 
         _yaw += Input.GetAxisRaw("Mouse X") * _mouseSensitivity;
         _yaw %= 360f;

@@ -21,7 +21,7 @@ public class PlayerGrab : EntityBehaviour<IPhysicState>
         if(Input.GetKeyUp(KeyCode.K))
         {
             isHolding = !isHolding;
-            cube.GetComponent<MovableCube>().Hold(holdItem, isHolding);
+            cube.GetComponent<PickableItem>().Hold(holdItem, isHolding);
         }
     }
 

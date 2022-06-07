@@ -1,10 +1,19 @@
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+using System;
+using System.Collections.Generic;
 using Photon.Bolt;
 
 public class PlayerMotor : EntityBehaviour<IPhysicState>
 {
     [SerializeField]
     private Camera _cam = null;
+    [SerializeField]
+    private GameObject _HUD = null;
+    
+    //private List<MeshRenderer> _playerMeshesToHide = new List<MeshRenderer>();
+
     private NetworkRigidbody _networkRigidbody = null;
 
     private float _speed = 7f;
@@ -20,6 +29,11 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
 
     [SerializeField]
     private Transform _holdItem;
+    private bool _isHolding = false;
+    private PickableItem _lastItemHolded = null;
+
+
+    private float _pickupDistance = 4.0f; //2.5f;
 
     private void Awake()
     {
@@ -29,10 +43,18 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
     public void Init(bool isMine)
     {
         if (isMine)
+        {
             _cam.gameObject.SetActive(true);
+            _HUD.SetActive(true);
+
+            foreach(MeshRenderer mesh in GetComponentsInChildren<MeshRenderer>())
+            {
+                mesh.enabled = false;
+            }
+        }
     }
 
-    public State ExecuteCommand(bool forward, bool backward, bool left, bool right, bool jump, float yaw, float pitch)
+    public State ExecuteCommand(bool forward, bool backward, bool left, bool right, bool jump, float yaw, float pitch, bool holding)
     {
         Vector3 movingDir = Vector3.zero;
         if (forward ^ backward)
@@ -58,6 +80,34 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
             if (_jumpPressed)
                 _jumpPressed = false;
         }
+
+#region Holding objects
+        if (holding && !_isHolding)
+        {
+            Ray RayOrigin;
+            RaycastHit hit;
+            Transform cameraTransform = _cam.transform;
+
+            Debug.DrawRay(cameraTransform.position, cameraTransform.forward * _pickupDistance, Color.yellow);
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, _pickupDistance))
+            {
+                _HUD.GetComponentInChildren<Text>().text = hit.collider.name;
+
+                if(hit.collider.GetComponent<PickableItem>() != null)
+                {
+                    hit.collider.GetComponent<PickableItem>().Hold(_holdItem, true);
+                    _isHolding = true;
+                    _lastItemHolded = hit.collider.GetComponent<PickableItem>();
+                }
+            }
+        }
+
+        if(!holding && _isHolding)
+        {
+            _lastItemHolded.Hold(_holdItem, false);
+            _isHolding = false;
+        }
+#endregion
 
         movingDir.Normalize();
         movingDir *= _speed;
