@@ -18,6 +18,9 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
     private bool _isGrounded = false;
     private float _maxAngle = 45f;
 
+    [SerializeField]
+    private Transform _holdItem;
+
     private void Awake()
     {
         _networkRigidbody = GetComponent<NetworkRigidbody>();

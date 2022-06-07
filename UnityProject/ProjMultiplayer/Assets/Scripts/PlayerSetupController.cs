@@ -27,7 +27,7 @@ public class PlayerSetupController : GlobalEventListener
     
     public override void OnEvent(SpawnPlayerEvent evnt)
     {
-        BoltEntity entity = BoltNetwork.Instantiate(BoltPrefabs.Player, new Vector3(0, 1, 0), Quaternion.identity);
+        BoltEntity entity = BoltNetwork.Instantiate(BoltPrefabs.Player2, new Vector3(0, 1, 0), Quaternion.identity);
         entity.AssignControl(evnt.RaisedBy);
         Debug.LogError("Spawning player");
     }
