@@ -480,12 +480,13 @@
           }
         },
         {
-          "Name": "HeadTransform",
+          "Name": "HeadAim",
           "Enabled": true,
           "Expanded": true,
           "Priority": 1,
           "PropertyType": {
             "$type": "Photon.Bolt.Compiler.PropertyTypeTransform, bolt.compiler",
+            "PositionSelection": 14,
             "RotationSelection": 14,
             "PositionCompression": [
               {

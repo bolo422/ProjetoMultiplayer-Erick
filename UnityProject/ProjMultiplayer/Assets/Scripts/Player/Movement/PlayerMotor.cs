@@ -36,8 +36,7 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
     private Animator _animator;
 
     [SerializeField]
-    private Transform _head;
-
+    private Transform _headAim;
 
     private float _pickupDistance = 4.0f; //2.5f;
 
@@ -49,7 +48,7 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
     public override void Attached()
     {
         state.SetAnimator(_animator);
-        state.SetTransforms(state.HeadTransform, _cam.transform);
+        state.SetTransforms(state.HeadAim, _headAim);
     }
 
     public void Init(bool isMine)
@@ -162,7 +161,6 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
             
         }
 
-        _head.rotation = state.HeadTransform.Rotation;
 
         
 

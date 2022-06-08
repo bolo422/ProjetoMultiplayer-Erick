@@ -1,15 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Bolt;
 
-public class CameraMoveHead : MonoBehaviour
+public class CameraMoveHead : EntityBehaviour<IPhysicState>
 {
     [SerializeField]
-    private Transform head;
+    private Transform headAim;
+    [SerializeField]
+    private Transform headAimSlot;
 
-    private void FixedUpdate()
+    public override void Attached()
     {
-        head.rotation = transform.rotation;
+        state.SetTransforms(state.HeadAim, headAim);
+    }
 
+    public override void SimulateOwner()
+    {
+        headAim.position = headAimSlot.position;
+        headAim.rotation = headAimSlot.rotation;
     }
 }
