@@ -48,7 +48,6 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
     public override void Attached()
     {
         state.SetAnimator(_animator);
-        state.SetTransforms(state.HeadAim, _headAim);
     }
 
     public void Init(bool isMine)

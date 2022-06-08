@@ -2,27 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Bolt;
+using UnityEngine.Animations.Rigging;
 
 public class PlayerGrab : EntityBehaviour<IPhysicState>
 {
     [SerializeField]
-    Transform holdItem;
+    private Transform leftHandTarget;
+    [SerializeField]
+    private Transform rightHandTarget;
+    [SerializeField]
+    private Rig armsRig;
 
-    private GameObject cube;
     private bool isHolding = false;
 
     public override void Attached()
     {
-        cube = GameObject.FindGameObjectWithTag("movableCube");
+        state.SetTransforms(state.LeftHand, leftHandTarget);
+        state.SetTransforms(state.RightHand, rightHandTarget);
     }
 
-    private void Update()
+    public override void SimulateOwner()
     {
-        if(Input.GetKeyUp(KeyCode.K))
-        {
-            isHolding = !isHolding;
-            cube.GetComponent<PickableItem>().Hold(holdItem, isHolding);
-        }
+        base.SimulateOwner();
     }
 
 }
