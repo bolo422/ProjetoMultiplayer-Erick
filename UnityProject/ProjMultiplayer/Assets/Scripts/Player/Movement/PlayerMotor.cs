@@ -32,12 +32,24 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
     private bool _isHolding = false;
     private PickableItem _lastItemHolded = null;
 
+    [SerializeField]
+    private Animator _animator;
+
+    [SerializeField]
+    private Transform _head;
+
 
     private float _pickupDistance = 4.0f; //2.5f;
 
     private void Awake()
     {
         _networkRigidbody = GetComponent<NetworkRigidbody>();
+    }
+
+    public override void Attached()
+    {
+        state.SetAnimator(_animator);
+        state.SetTransforms(state.HeadTransform, _cam.transform);
     }
 
     public void Init(bool isMine)
@@ -47,10 +59,12 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
             _cam.gameObject.SetActive(true);
             _HUD.SetActive(true);
 
-            foreach(MeshRenderer mesh in GetComponentsInChildren<MeshRenderer>())
+            foreach(Renderer mesh in GetComponentsInChildren<Renderer>())
             {
                 mesh.enabled = false;
             }
+
+
         }
     }
 
@@ -120,11 +134,39 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
         stateMotor.position = transform.position;
         stateMotor.rotation = yaw;
 
+        #region move animation
+
+        state.isMoving = movingDir != Vector3.zero;
+
+        #endregion
+
+
+
         return stateMotor;
     }
 
     private void FixedUpdate()
     {
+
+        if (state.isMoving)
+        {
+            state.Animator.Play("DrunkRun");
+        }
+        else
+        {
+            state.Animator.Play("DrunkIdle");
+        }
+
+        if(!entity.HasControl)
+        {
+            
+        }
+
+        _head.rotation = state.HeadTransform.Rotation;
+
+        
+
+
         if (entity.IsAttached)
         {
             if (entity.IsControllerOrOwner)

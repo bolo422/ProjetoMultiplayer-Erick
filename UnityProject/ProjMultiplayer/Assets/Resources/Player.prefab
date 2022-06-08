@@ -847,6 +847,8 @@ MonoBehaviour:
   _cam: {fileID: 8043613161163879514}
   _HUD: {fileID: 0}
   _holdItem: {fileID: 0}
+  _animator: {fileID: 0}
+  _head: {fileID: 0}
 --- !u!114 &2758163079494006573
 MonoBehaviour:
   m_ObjectHideFlags: 0
