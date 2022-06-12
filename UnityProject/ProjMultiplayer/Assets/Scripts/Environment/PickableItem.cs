@@ -9,15 +9,31 @@ public class PickableItem : EntityBehaviour<IPickableItem>
     private bool beignHeld = false;
     private Rigidbody rb;
 
+    //private GameObject objectiveTrigger;
+
+    //private bool insideObjective = false;
+
     public override void Attached()
     {
+        //GameObject[] children = GetComponentsInChildren<GameObject>();
+
+        //foreach(GameObject child in children)
+        //{
+        //    if (child.tag == "Objective")
+        //        objectiveTrigger = child;
+        //}
+
         state.SetTransforms(state.Transform, transform);
         rb = GetComponent<Rigidbody>();
 
         if (entity.IsOwner)
+        {
             state.UseGravity = rb.useGravity;
+            //state.InsideTriggerObjective = insideObjective;
+        }
 
         state.AddCallback("UseGravity", UseGravityChanged);
+        //state.AddCallback("InsideTriggerObjective", InsideTriggerObjectiveChanged);
     }
 
     public override void SimulateOwner()
@@ -25,6 +41,7 @@ public class PickableItem : EntityBehaviour<IPickableItem>
         if (beignHeld && reference != null)
         {
             transform.position = reference.position;
+            transform.rotation = reference.rotation;
             gameObject.layer = LayerMask.NameToLayer("DontCollideWithPlayers");
         }
         else
@@ -49,8 +66,13 @@ public class PickableItem : EntityBehaviour<IPickableItem>
         {
             this.beignHeld = false;
             this.reference = null;
-            rb.useGravity = true;
-            state.UseGravity = rb.useGravity;
+
+            if (entity.IsOwner)
+            { 
+                rb.useGravity = true;
+                state.UseGravity = rb.useGravity;
+            }
+
             return;
         }
 
@@ -63,12 +85,43 @@ public class PickableItem : EntityBehaviour<IPickableItem>
         {
             this.reference = _reference;
             beignHeld = wantToHoldMe;
-            rb.useGravity = false;
-            state.UseGravity = rb.useGravity;
+
+            if (entity.IsOwner)
+            {
+                rb.useGravity = false;
+                state.UseGravity = rb.useGravity;
+            }
+
             return;
             
         }
 
+    }
+
+    public void InsideTriggerObjectiveChanged()
+    {
+        //insideObjective = state.InsideTriggerObjective;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!entity.IsOwner)
+            return;
+
+        ServerGameManager.Instance.AddToObjectiveHashSet(this);
+
+        //insideObjective = true;
+        //state.InsideTriggerObjective = insideObjective;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!entity.IsOwner)
+            return;
+
+        ServerGameManager.Instance.RemoveFromObjectiveHashSet(this);
+        //insideObjective = false;
+        //state.InsideTriggerObjective = insideObjective;
     }
 
 

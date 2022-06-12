@@ -18,9 +18,15 @@ public class PlayerController : EntityBehaviour<IPhysicState>
 
     private float _mouseSensitivity = 5f;
 
+    //private DrunkEffect drunkEffect;
+
+    //private Camera camera;
+
     public void Awake()
     {
         _playerMotor = GetComponent<PlayerMotor>();
+        //drunkEffect = GetComponentInChildren<DrunkEffect>();
+        //camera = GetComponentInChildren<Camera>();
     }
 
     public override void Attached()
@@ -62,6 +68,9 @@ public class PlayerController : EntityBehaviour<IPhysicState>
         _yaw %= 360f;
         _pitch += -Input.GetAxisRaw("Mouse Y") * _mouseSensitivity;
         _pitch = Mathf.Clamp(_pitch, -85, 85);
+
+        //drunkEffect.pitch = _pitch;
+        //camera.transform.localEulerAngles = new Vector3(_pitch, 0f, 0f);
     }
 
     public override void SimulateController()
@@ -111,4 +120,5 @@ public class PlayerController : EntityBehaviour<IPhysicState>
             cmd.Result.Rotation = motorState.rotation;
         }
     }
+
 }

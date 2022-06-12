@@ -4,6 +4,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using Photon.Bolt;
+using UnityEngine.Animations.Rigging;
 
 public class PlayerMotor : EntityBehaviour<IPhysicState>
 {
@@ -16,13 +17,13 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
 
     private NetworkRigidbody _networkRigidbody = null;
 
-    private float _speed = 7f;
+    private float _speed = 6f;
 
     private Vector3 _lastServerPos = Vector3.zero;
     private bool _firstState = true;
 
     private bool _jumpPressed = false;
-    private float _jumpForce = 9f;
+    private float _jumpForce = 3f;
 
     private bool _isGrounded = false;
     private float _maxAngle = 45f;
@@ -40,6 +41,9 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
 
     private float _pickupDistance = 4.0f; //2.5f;
 
+    [SerializeField]
+    private Rig armsRig;
+
     private void Awake()
     {
         _networkRigidbody = GetComponent<NetworkRigidbody>();
@@ -48,6 +52,7 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
     public override void Attached()
     {
         state.SetAnimator(_animator);
+        state.isHolding = false;
     }
 
     public void Init(bool isMine)
@@ -78,48 +83,9 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
             movingDir += right ? transform.right : -transform.right;
         }
 
-        if (jump)
-        {
-            if (_jumpPressed == false && _isGrounded)
-            {
-                _isGrounded = false;
-                _jumpPressed = true;
-                _networkRigidbody.MoveVelocity += Vector3.up * _jumpForce;
-            }
-        }
-        else
-        {
-            if (_jumpPressed)
-                _jumpPressed = false;
-        }
+        Jump(jump);
 
-#region Holding objects
-        if (holding && !_isHolding)
-        {
-            Ray RayOrigin;
-            RaycastHit hit;
-            Transform cameraTransform = _cam.transform;
-
-            Debug.DrawRay(cameraTransform.position, cameraTransform.forward * _pickupDistance, Color.yellow);
-            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, _pickupDistance))
-            {
-                _HUD.GetComponentInChildren<Text>().text = hit.collider.name;
-
-                if(hit.collider.GetComponent<PickableItem>() != null)
-                {
-                    hit.collider.GetComponent<PickableItem>().Hold(_holdItem, true);
-                    _isHolding = true;
-                    _lastItemHolded = hit.collider.GetComponent<PickableItem>();
-                }
-            }
-        }
-
-        if(!holding && _isHolding)
-        {
-            _lastItemHolded.Hold(_holdItem, false);
-            _isHolding = false;
-        }
-#endregion
+        HoldObejct(holding);
 
         movingDir.Normalize();
         movingDir *= _speed;
@@ -143,25 +109,64 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
         return stateMotor;
     }
 
-    private void FixedUpdate()
-    {
 
-        if (state.isMoving)
+    private void HoldObejct(bool holding)
+    {
+        if (holding && !_isHolding)
         {
-            state.Animator.Play("DrunkRun");
+            Ray RayOrigin;
+            RaycastHit hit;
+            Transform cameraTransform = _cam.transform;
+
+            //Debug.DrawRay(cameraTransform.position, cameraTransform.forward * _pickupDistance, Color.yellow);
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, _pickupDistance, 3))
+            {
+                _HUD.GetComponentInChildren<Text>().text = hit.collider.name;
+
+                if (hit.collider.GetComponent<PickableItem>() != null)
+                {
+                    hit.collider.GetComponent<PickableItem>().Hold(_holdItem, true);
+                    _isHolding = true;
+                    _lastItemHolded = hit.collider.GetComponent<PickableItem>();
+                    state.isHolding = true;
+                }
+            }
+        }
+
+        if (!holding && _isHolding)
+        {
+            _lastItemHolded.Hold(_holdItem, false);
+            _isHolding = false;
+            state.isHolding = false;
+        }
+    }
+
+    private void Jump(bool jump)
+    {
+        if (jump)
+        {
+            if (_jumpPressed == false && _isGrounded)
+            {
+                _isGrounded = false;
+                _jumpPressed = true;
+                _networkRigidbody.MoveVelocity += Vector3.up * _jumpForce;
+            }
         }
         else
         {
-            state.Animator.Play("DrunkIdle");
+            if (_jumpPressed)
+                _jumpPressed = false;
         }
+    }
 
-        if(!entity.HasControl)
-        {
-            
-        }
+    private void FixedUpdate()
+    {
+        Animate();
 
-
-        
+        if(state.isHolding)
+            armsRig.weight = 100f;
+        else
+            armsRig.weight = 0f;
 
 
         if (entity.IsAttached)
@@ -189,6 +194,18 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
                     }
                 }
             }
+        }
+    }
+
+    private void Animate()
+    {
+        if (state.isMoving)
+        {
+            state.Animator.Play("DrunkRun");
+        }
+        else
+        {
+            state.Animator.Play("DrunkIdle");
         }
     }
 

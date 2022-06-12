@@ -21,6 +21,8 @@ public class PlayerSetupController : GlobalEventListener
         else
         {
             BoltNetwork.Instantiate(BoltPrefabs.MovableCube, new Vector3(1, 5, 0), Quaternion.identity);
+            BoltNetwork.Instantiate(BoltPrefabs.MovableCube, new Vector3(2, 5, 1), Quaternion.identity);
+            BoltNetwork.Instantiate(BoltPrefabs.MovableCube, new Vector3(1, 5, 4), Quaternion.identity);
         }
     }
 
@@ -34,6 +36,7 @@ public class PlayerSetupController : GlobalEventListener
 
     public void SpawnPlayer()
     {
+        Debug.LogError(" ****-*--*-*-*-* TESTING *-********-*-");
         SpawnPlayerEvent evnt = SpawnPlayerEvent.Create(GlobalTargets.OnlyServer);
         evnt.Send();
         Debug.LogError("Sending SpawnPlayerEvent event");

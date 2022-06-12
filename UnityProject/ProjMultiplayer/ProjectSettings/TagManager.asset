@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - movableCube
+  - notColliding
+  - Objective
+  - ObjectiveTriggerBox
   layers:
   - Default
   - TransparentFX
@@ -15,8 +18,8 @@ TagManager:
   - Ground
   - DontCollideWithPlayers
   - Player
-  - 
-  - 
+  - Objective
+  - ObjectiveTriggerBox
   - 
   - 
   - 

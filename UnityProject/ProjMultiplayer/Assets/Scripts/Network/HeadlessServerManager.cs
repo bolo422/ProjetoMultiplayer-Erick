@@ -15,6 +15,9 @@ public class HeadlessServerManager : GlobalEventListener
     private static string s_roomID;
 
     [SerializeField]
+    private static bool _clientSkipMenu;
+
+    [SerializeField]
     private bool _isServer = false;
 
     public bool IsServer { get => _isServer; set => _isServer = value; }
@@ -22,6 +25,11 @@ public class HeadlessServerManager : GlobalEventListener
     public static string RoomID()
     {
         return s_roomID;
+    }
+
+    public static bool ClientSkipMenu()
+    {
+        return _clientSkipMenu;
     }
 
     public static string Map()
@@ -64,6 +72,7 @@ public class HeadlessServerManager : GlobalEventListener
         _isServer = "true" == (GetArg("-s", "-isServer") ?? (_isServer ? "true" : "false"));
         s_map = GetArg("-m", "-map") ?? _map;
         s_roomID = GetArg("-r", "-room") ?? _roomID;
+        _clientSkipMenu = "true" == (GetArg("-skp", "-skipmenu", "-sm") ?? (_clientSkipMenu ? "true" : "false"));
 
         if (IsServer)
         {
@@ -108,4 +117,9 @@ public class HeadlessServerManager : GlobalEventListener
 
         return null;
     }
+
+    //private void Start()
+    //{
+    //    Instantiate<GameObject>(Resources.Load<GameObject>("ServerGameManager"));
+    //}
 }

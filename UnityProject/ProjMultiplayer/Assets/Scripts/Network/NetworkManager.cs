@@ -15,6 +15,13 @@ public class NetworkManager : GlobalEventListener
     [SerializeField]
     private GameObject RoomNameInput;
 
+
+    private void Start()
+    {
+        if (HeadlessServerManager.ClientSkipMenu())
+            BoltLauncher.StartClient();
+    }
+
     public void FeedbackUser(string text)
     {
         feedback.text = text;
@@ -22,6 +29,9 @@ public class NetworkManager : GlobalEventListener
 
     public void Connect()
     {
+        if (HeadlessServerManager.RoomID().Length == 0 && roomNameInputText.text.Length == 0)
+            return;
+
         //RoomNameInput.SetActive(false);
         //feedback.GetComponent<GameObject>().SetActive(true);
 
@@ -32,10 +42,12 @@ public class NetworkManager : GlobalEventListener
     public override void SessionListUpdated(Map<Guid, UdpSession> sessionList)
     {
         FeedbackUser("Searching ...");
-        if(roomNameInputText != null)
-            BoltMatchmaking.JoinSession(roomNameInputText.text);
-        else
+
+        if (HeadlessServerManager.ClientSkipMenu())
             BoltMatchmaking.JoinSession(HeadlessServerManager.RoomID());
+        else
+            BoltMatchmaking.JoinSession(roomNameInputText.text);
+
     }
 
     public override void Connected(BoltConnection connection)
