@@ -9,7 +9,11 @@ using UnityEngine.Animations.Rigging;
 public class PlayerMotor : EntityBehaviour<IPhysicState>
 {
     [SerializeField]
-    private Camera _cam = null;
+    private GameObject head = null;
+
+    [SerializeField]
+    private Camera cam;
+
     [SerializeField]
     private GameObject _HUD = null;
     
@@ -23,7 +27,7 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
     private bool _firstState = true;
 
     private bool _jumpPressed = false;
-    private float _jumpForce = 3f;
+    private float _jumpForce = 5f;
 
     private bool _isGrounded = false;
     private float _maxAngle = 45f;
@@ -44,6 +48,8 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
     [SerializeField]
     private Rig armsRig;
 
+    bool _interactCooldown = true;
+
     private void Awake()
     {
         _networkRigidbody = GetComponent<NetworkRigidbody>();
@@ -59,7 +65,7 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
     {
         if (isMine)
         {
-            _cam.gameObject.SetActive(true);
+            head.SetActive(true);
             _HUD.SetActive(true);
 
             foreach(Renderer mesh in GetComponentsInChildren<Renderer>())
@@ -71,7 +77,7 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
         }
     }
 
-    public State ExecuteCommand(bool forward, bool backward, bool left, bool right, bool jump, float yaw, float pitch, bool holding)
+    public State ExecuteCommand(bool forward, bool backward, bool left, bool right, bool jump, float yaw, float pitch, bool holding, bool interact, Vector3 boxSpawnPosition, int boxSpawnTag)
     {
         Vector3 movingDir = Vector3.zero;
         if (forward ^ backward)
@@ -91,7 +97,7 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
         movingDir *= _speed;
         _networkRigidbody.MoveVelocity = new Vector3(movingDir.x, _networkRigidbody.MoveVelocity.y, movingDir.z);
 
-        _cam.transform.localEulerAngles = new Vector3(pitch, 0f, 0f);
+        head.transform.localEulerAngles = new Vector3(pitch, 0f, 0f);
         transform.rotation = Quaternion.Euler(0, yaw, 0);
 
         State stateMotor = new State();
@@ -104,11 +110,51 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
 
         #endregion
 
+        //if(interact)
+        //{
+        //    BoxSpawner[] interactables = FindObjectsOfType<BoxSpawner>();
+        //    List<GameObject> interactablesList = new List<GameObject>();
+        //    foreach(BoxSpawner interactable in interactables)
+        //    {
+        //        interactablesList.Add(interactable.gameObject);
+        //    }
+        //    BUtils.Closest(transform.position, interactablesList.ToArray(), out int index);
+        //    if(interactables[index].HasPlayerInside())
+        //    {
+        //        Box box = BoltNetwork.Instantiate(BoltPrefabs.Box, interactables[index].GetSpawnPosition(), Quaternion.identity).GetComponent<Box>();
+        //        box.CurrentTagColor = interactables[index].GetTagColor();
+        //    }
 
+        //}
+
+        if (entity.IsOwner && interact && _interactCooldown)
+        {
+            BoltEntity box = BoltNetwork.Instantiate(BoltPrefabs.Box, boxSpawnPosition, Quaternion.identity);
+            box.GetComponent<Box>().TagColor = (TagColors)boxSpawnTag;
+            _interactCooldown = false;
+            StartCoroutine(IntereactCooldown());
+        }
+
+        //if (interact && _interactCooldown)
+        //{
+        //    var spawnBoxEvent = SpawnBox.Create();
+        //    spawnBoxEvent.Position = boxSpawnPosition;
+        //    spawnBoxEvent.TagColor = boxSpawnTag;
+        //    spawnBoxEvent.Send();
+
+        //    _interactCooldown = false;
+        //    StartCoroutine(IntereactCooldown());
+
+        //}
 
         return stateMotor;
     }
 
+    IEnumerator IntereactCooldown()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _interactCooldown = true;
+    }
 
     private void HoldObejct(bool holding)
     {
@@ -116,12 +162,16 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
         {
             Ray RayOrigin;
             RaycastHit hit;
-            Transform cameraTransform = _cam.transform;
+            Transform cameraTransform = cam.transform;
+
+            int pickableItemLayerIndex = LayerMask.NameToLayer("PickableItemLayer");
+            int dontCollideWithPlayersLayerIndex = LayerMask.NameToLayer("DontCollideWithPlayers");
+            int layerMask = (1 << pickableItemLayerIndex) | (1 << dontCollideWithPlayersLayerIndex);
 
             //Debug.DrawRay(cameraTransform.position, cameraTransform.forward * _pickupDistance, Color.yellow);
-            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, _pickupDistance, 3))
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, _pickupDistance, layerMask))
             {
-                _HUD.GetComponentInChildren<Text>().text = hit.collider.name;
+               // _HUD.GetComponentInChildren<Text>().text = hit.collider.name;
 
                 if (hit.collider.GetComponent<PickableItem>() != null)
                 {

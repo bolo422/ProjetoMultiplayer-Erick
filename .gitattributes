@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+ProjMultiplayer/Library/ArtifactDB filter=lfs diff=lfs merge=lfs -text
+UnityProject/ProjMultiplayer/Library/ArtifactDB filter=lfs diff=lfs merge=lfs -text

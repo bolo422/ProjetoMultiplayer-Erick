@@ -210,6 +210,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8e544bbdcb5da14e8006daa5b2a22c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _map: Level_1
+  _map: wh_1
   _roomID: Test
   _isServer: 0

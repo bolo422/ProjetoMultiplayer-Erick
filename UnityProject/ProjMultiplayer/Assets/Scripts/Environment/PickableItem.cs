@@ -24,6 +24,15 @@ public class PickableItem : EntityBehaviour<IPickableItem>
         //}
 
         state.SetTransforms(state.Transform, transform);
+        
+        //foreach(Rigidbody r in GetComponentsInChildren<Rigidbody>())
+        //{
+        //    if(r.gameObject.activeSelf)
+        //    {
+        //        rb = r;
+        //    }
+        //}
+
         rb = GetComponent<Rigidbody>();
 
         if (entity.IsOwner)
@@ -46,7 +55,7 @@ public class PickableItem : EntityBehaviour<IPickableItem>
         }
         else
         {
-            gameObject.layer = LayerMask.NameToLayer("Default");
+            gameObject.layer = LayerMask.NameToLayer("PickableItemLayer");
         }
     }
 
@@ -108,7 +117,12 @@ public class PickableItem : EntityBehaviour<IPickableItem>
         if (!entity.IsOwner)
             return;
 
-        ServerGameManager.Instance.AddToObjectiveHashSet(this);
+        if (other.CompareTag("ObjectiveTriggerBox"))
+        {
+            Debug.Log("OnTriggerEnter");
+            TagColors t = other.GetComponentInParent<Banner>().CurrentColor;
+            ServerGameManager.Instance.AddToObjectiveHashSet(this, t);
+        }
 
         //insideObjective = true;
         //state.InsideTriggerObjective = insideObjective;
@@ -119,7 +133,13 @@ public class PickableItem : EntityBehaviour<IPickableItem>
         if (!entity.IsOwner)
             return;
 
-        ServerGameManager.Instance.RemoveFromObjectiveHashSet(this);
+
+        if (other.CompareTag("ObjectiveTriggerBox"))
+        {
+            Debug.Log("OnTriggerExit");
+            TagColors t = other.GetComponentInParent<Banner>().CurrentColor;
+            ServerGameManager.Instance.RemoveFromObjectiveHashSet(this, t);
+        }
         //insideObjective = false;
         //state.InsideTriggerObjective = insideObjective;
     }

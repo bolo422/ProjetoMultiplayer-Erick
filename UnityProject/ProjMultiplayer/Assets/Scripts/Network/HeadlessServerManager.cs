@@ -118,6 +118,25 @@ public class HeadlessServerManager : GlobalEventListener
         return null;
     }
 
+    public override void OnEvent(NextLevelEvent evnt)
+    {
+        if(BoltNetwork.IsServer)
+        {
+            string sceneName = SceneManager.GetActiveScene().name;
+            char lastChar = sceneName[sceneName.Length - 1];
+
+            switch(lastChar)
+            {
+                case '1': sceneName = "wh_2"; break;
+                case '2': sceneName = "wh_3"; break;
+                case '3': sceneName = "wh_4"; break;
+                case '4': return;
+            }
+
+            BoltNetwork.LoadScene(sceneName);
+        }
+    }
+
     //private void Start()
     //{
     //    Instantiate<GameObject>(Resources.Load<GameObject>("ServerGameManager"));

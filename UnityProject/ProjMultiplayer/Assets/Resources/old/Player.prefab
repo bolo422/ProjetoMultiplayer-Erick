@@ -775,7 +775,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneGuid: 
   _serializerGuid: efc4f2e6-ec0d-4021-8bdb-3c576e16c835
-  _prefabId: 6
+  _prefabId: 7
   _updateRate: 1
   _autoFreezeProxyFrames: 0
   _clientPredicted: 1
@@ -844,7 +844,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb97d4f42130d4f4ab8eba83c3d3a144, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cam: {fileID: 8043613161163879514}
+  head: {fileID: 0}
+  cam: {fileID: 0}
   _HUD: {fileID: 0}
   _holdItem: {fileID: 0}
   _animator: {fileID: 0}

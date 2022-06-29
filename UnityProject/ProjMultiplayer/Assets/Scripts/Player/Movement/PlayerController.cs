@@ -1,5 +1,7 @@
 using UnityEngine;
 using Photon.Bolt;
+using System.Collections.Generic;
+using System.Collections;
 
 public class PlayerController : EntityBehaviour<IPhysicState>
 {
@@ -13,6 +15,14 @@ public class PlayerController : EntityBehaviour<IPhysicState>
     private bool _jump;
 
     private bool _hold = false;
+    private bool _interact = false;
+    private bool _doInteract = false;
+    private bool _canInteract = false;
+
+    private bool _interactHasCooldown = false;
+
+    BoxSpawner _lastBoxSpawner;
+    
 
     private bool _hasControl = false;
 
@@ -25,6 +35,7 @@ public class PlayerController : EntityBehaviour<IPhysicState>
     public void Awake()
     {
         _playerMotor = GetComponent<PlayerMotor>();
+        _lastBoxSpawner = FindObjectOfType<BoxSpawner>();
         //drunkEffect = GetComponentInChildren<DrunkEffect>();
         //camera = GetComponentInChildren<Camera>();
     }
@@ -53,6 +64,27 @@ public class PlayerController : EntityBehaviour<IPhysicState>
     {
         if (_hasControl)
             PollKeys();
+
+        if (Input.GetKeyDown(KeyCode.E) && !_interactHasCooldown && _canInteract)
+        {
+            _interactHasCooldown = true;
+            StartCoroutine(IntereactCooldown());
+            _doInteract = true;
+        }
+
+        //if(Input.GetKeyDown(KeyCode.Escape))
+        //{
+        //    if (Cursor.lockState == CursorLockMode.Locked)
+        //        Cursor.lockState = CursorLockMode.None;
+        //    else
+        //        Cursor.lockState = CursorLockMode.Locked;
+        //}
+    }
+
+    IEnumerator IntereactCooldown()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _interactHasCooldown = false;
     }
 
     private void PollKeys()
@@ -63,6 +95,10 @@ public class PlayerController : EntityBehaviour<IPhysicState>
         _right = Input.GetKey(KeyCode.D);
         _jump = Input.GetKey(KeyCode.Space);
         _hold = Input.GetKey(KeyCode.Mouse0);
+        _interact = _doInteract;
+
+        if(_doInteract)
+            _doInteract = false;
 
         _yaw += Input.GetAxisRaw("Mouse X") * _mouseSensitivity;
         _yaw %= 360f;
@@ -84,10 +120,14 @@ public class PlayerController : EntityBehaviour<IPhysicState>
         input.Pitch = _pitch;
         input.Jump = _jump;
         input.Hold = _hold;
+        input.Interact = _interact;
+        input.BoxSpawnPosition = _lastBoxSpawner.GetSpawnPosition();
+        input.BoxSpawnTag = 1;//(int)_lastBoxSpawner.GetTagColor();
 
         entity.QueueInput(input);
 
-        _playerMotor.ExecuteCommand(_forward, _backward, _left, _right, _jump, _yaw, _pitch, _hold);
+        _playerMotor.ExecuteCommand(_forward, _backward, _left, _right, _jump, _yaw, _pitch, _hold, _interact, _lastBoxSpawner.GetSpawnPosition(), 1);// (int)_lastBoxSpawner.GetTagColor());
+        
     }
 
 
@@ -113,11 +153,41 @@ public class PlayerController : EntityBehaviour<IPhysicState>
                 cmd.Input.Jump,
                 cmd.Input.Yaw,
                 cmd.Input.Pitch,
-                cmd.Input.Hold);
+                cmd.Input.Hold,
+                cmd.Input.Interact,
+                cmd.Input.BoxSpawnPosition,
+                cmd.Input.BoxSpawnTag);
             }
 
             cmd.Result.Position = motorState.position;
             cmd.Result.Rotation = motorState.rotation;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(_hasControl)
+        {
+            if(other.CompareTag("boxSpawner"))
+            {
+                if (!other.GetComponent<BoxSpawner>().PlayerCanInteract) return;
+
+                _canInteract = true;
+                _lastBoxSpawner = other.GetComponent<BoxSpawner>();
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (_hasControl)
+        {
+            if (other.CompareTag("boxSpawner"))
+            {
+                if (!other.GetComponent<BoxSpawner>().PlayerCanInteract) return;
+
+                _canInteract = false;
+            }
         }
     }
 

@@ -8,6 +8,14 @@ TagManager:
   - notColliding
   - Objective
   - ObjectiveTriggerBox
+  - LocalGameManger
+  - boxTag
+  - boxSpawner
+  - testText
+  - playerSpawnPosition
+  - banner
+  - finishLevelText
+  - objectivesText
   layers:
   - Default
   - TransparentFX
@@ -20,8 +28,8 @@ TagManager:
   - Player
   - Objective
   - ObjectiveTriggerBox
-  - 
-  - 
+  - PickupTrough
+  - PickableItemLayer
   - 
   - 
   - 
