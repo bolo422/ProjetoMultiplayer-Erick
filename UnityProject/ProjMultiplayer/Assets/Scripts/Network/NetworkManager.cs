@@ -16,12 +16,6 @@ public class NetworkManager : GlobalEventListener
     private GameObject RoomNameInput;
 
 
-    private void Start()
-    {
-        if (HeadlessServerManager.ClientSkipMenu())
-            BoltLauncher.StartClient();
-    }
-
     public void FeedbackUser(string text)
     {
         feedback.text = text;
@@ -43,10 +37,7 @@ public class NetworkManager : GlobalEventListener
     {
         FeedbackUser("Searching ...");
 
-        if (HeadlessServerManager.ClientSkipMenu())
-            BoltMatchmaking.JoinSession(HeadlessServerManager.RoomID());
-        else
-            BoltMatchmaking.JoinSession(roomNameInputText.text);
+        BoltMatchmaking.JoinSession(roomNameInputText.text);
 
     }
 

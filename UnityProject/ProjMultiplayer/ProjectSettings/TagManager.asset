@@ -16,6 +16,7 @@ TagManager:
   - banner
   - finishLevelText
   - objectivesText
+  - menuBox
   layers:
   - Default
   - TransparentFX
