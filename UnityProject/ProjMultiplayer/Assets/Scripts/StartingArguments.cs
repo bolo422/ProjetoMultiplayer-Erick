@@ -8,13 +8,17 @@ public class StartingArguments : MonoBehaviour
     private GameObject mainPanel, instructionsPanel, configPanel;
 
     [SerializeField]
+    private GameObject tutorial;
+
+    [SerializeField]
     private UnityEngine.UI.Text roomNameInputText;
 
     [SerializeField]
     private UnityEngine.UI.Text instructionsText;
 
 
-    public StartingArguments Instance { get; private set; }
+    public static StartingArguments Instance { get; private set; }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -22,7 +26,7 @@ public class StartingArguments : MonoBehaviour
             Destroy(this);
             return;
         }
-        Instance = this;
+        StartingArguments.Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
@@ -58,34 +62,33 @@ public class StartingArguments : MonoBehaviour
         SceneManager.LoadScene("Start");
     }
 
-
+    private void SwitchPanel(GameObject g)
+    {
+        mainPanel.SetActive(false);
+        instructionsPanel.SetActive(false);
+        configPanel.SetActive(false);
+        tutorial.SetActive(false);
+        g.SetActive(true);
+    }
 
     public void GoToInstructions()
     {
-        mainPanel.SetActive(false);
-        instructionsPanel.SetActive(true);
-        configPanel.SetActive(false);
+        SwitchPanel(instructionsPanel);
     }
 
     public void BackFromInstructions()
     {
-        mainPanel.SetActive(true);
-        instructionsPanel.SetActive(false);
-        configPanel.SetActive(false);
+        SwitchPanel(mainPanel);
     }
 
     public void GoToConfigServer()
     {
-        mainPanel.SetActive(false);
-        instructionsPanel.SetActive(false);
-        configPanel.SetActive(true);
+        SwitchPanel(configPanel);
     }
 
     public void BackFromConfigServer()
     {
-        mainPanel.SetActive(false);
-        instructionsPanel.SetActive(true);
-        configPanel.SetActive(false);
+        SwitchPanel(instructionsPanel);
     }
 
     public void StartServer()
@@ -110,5 +113,10 @@ public class StartingArguments : MonoBehaviour
             "1.O nome da sala escolhida será o nome que os demais jogadores(Clientes) deverão inserir em seus jogos.\n\n" +
             "2.Se você quiser jogar o jogo, além de ser o servidor, você precisará iniciar o jogo uma segunda vez e escolher \"Cliente\" no menu anterior.\n\n" +
             "3.Para encerrar o servidor a qualquer momento, basta fechar esta janela.";
+    }
+
+    public void StartTutorial()
+    {
+        SwitchPanel(tutorial);
     }
 }
